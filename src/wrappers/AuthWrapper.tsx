@@ -1,4 +1,4 @@
-import type { UserRole } from '@/lib/types';
+import { UserRole } from '@/lib/types';
 import { Box, CircularProgress } from '@mui/material';
 import type { ReactNode } from 'react';
 
@@ -14,7 +14,7 @@ const mockAuthState = {
     id: '1',
     email: 'admin@amadeus.com',
     name: 'Admin User',
-    role: 'admin' as UserRole,
+    role: UserRole.ADMIN,
   },
   isAuthenticated: true,
   isLoading: false,

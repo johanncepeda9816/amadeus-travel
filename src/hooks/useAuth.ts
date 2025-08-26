@@ -1,5 +1,6 @@
 import type { LoginFormData } from '@/features/auth/schemas';
 import type { AuthState, User } from '@/lib/types';
+import { UserRole } from '@/lib/types';
 import { useState } from 'react';
 
 const MOCK_USERS: User[] = [
@@ -7,13 +8,13 @@ const MOCK_USERS: User[] = [
     id: '1',
     email: 'admin@amadeus.com',
     name: 'Admin User',
-    role: 'admin',
+    role: UserRole.ADMIN,
   },
   {
     id: '2',
     email: 'user@amadeus.com',
     name: 'Regular User',
-    role: 'user',
+    role: UserRole.USER,
   },
 ];
 
