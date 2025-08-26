@@ -1,4 +1,4 @@
-import { FlightSearchForm } from '@/features';
+import { FlightSearchForm, FlightSearchResults } from '@/features';
 import {
   FlightTakeoff as FlightIcon,
   Hotel as HotelIcon,
@@ -77,6 +77,7 @@ export const SearchSection = () => {
 
         <TabPanel value={tabValue} index={0}>
           <FlightSearchForm />
+          <FlightSearchResults />
         </TabPanel>
 
         <TabPanel value={tabValue} index={1}>

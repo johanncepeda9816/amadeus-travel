@@ -1,4 +1,5 @@
 import { BaseButton, DateInput, FormikInput, SelectInput } from '@/components';
+import { useFlightSearch } from '@/hooks';
 import {
   Box,
   FormControl,
@@ -11,12 +12,11 @@ import {
   Typography,
 } from '@mui/material';
 import { Form, Formik } from 'formik';
-import { useState } from 'react';
 import type { FlightSearchFormData } from '../schemas';
 import { flightSearchSchema } from '../schemas';
 
 export const FlightSearchForm = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const { searchFlights, isLoading, clearError } = useFlightSearch();
 
   const initialValues: FlightSearchFormData = {
     origin: '',
@@ -29,15 +29,11 @@ export const FlightSearchForm = () => {
   };
 
   const handleSubmit = async (values: FlightSearchFormData) => {
-    setIsLoading(true);
     try {
-      console.log('Flight search:', values);
-      // TODO: Implement search logic
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      clearError();
+      await searchFlights(values);
     } catch (error) {
       console.error('Search failed:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
