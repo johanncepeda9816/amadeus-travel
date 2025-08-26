@@ -9,7 +9,9 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppRouter />
+      <div style={{ width: '100%', minHeight: '100vh', margin: 0, padding: 0 }}>
+        <AppRouter />
+      </div>
       <ToastContainer
         position="top-right"
         autoClose={5000}
