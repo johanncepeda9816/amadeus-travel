@@ -1,3 +1,4 @@
+import { FlightSearchForm } from '@/features';
 import {
   FlightTakeoff as FlightIcon,
   Hotel as HotelIcon,
@@ -75,17 +76,7 @@ export const SearchSection = () => {
         </Tabs>
 
         <TabPanel value={tabValue} index={0}>
-          <Box sx={{ textAlign: 'center', py: 4 }}>
-            <Typography variant="h6" gutterBottom>
-              Flight Search
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              Search functionality coming soon...
-            </Typography>
-            <Button variant="outlined" disabled>
-              Search Flights
-            </Button>
-          </Box>
+          <FlightSearchForm />
         </TabPanel>
 
         <TabPanel value={tabValue} index={1}>
