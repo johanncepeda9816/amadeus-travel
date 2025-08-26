@@ -23,14 +23,14 @@ export interface SearchMetadata {
 }
 
 export interface FlightSearchResponse {
+  success: boolean;
+  message: string;
   data: {
     outboundFlights: Flight[];
     returnFlights: Flight[];
     metadata: SearchMetadata;
-    error?: string;
-    message?: string;
-    success: boolean;
   };
+  error: string | null;
 }
 
 export interface FlightSearchRequest {

@@ -1,5 +1,5 @@
 import { BaseButton, DateInput, FormikInput, SelectInput } from '@/components';
-import { useFlightSearch } from '@/hooks';
+import { useFlightSearchStore } from '../store/flightSearchStore';
 import {
   Box,
   FormControl,
@@ -16,16 +16,30 @@ import type { FlightSearchFormData } from '../schemas';
 import { flightSearchSchema } from '../schemas';
 
 export const FlightSearchForm = () => {
-  const { searchFlights, isLoading, clearError } = useFlightSearch();
+  const { searchFlights, isLoading, clearError, lastSearchData } =
+    useFlightSearchStore();
 
-  const initialValues: FlightSearchFormData = {
-    origin: '',
-    destination: '',
-    departureDate: new Date(),
-    returnDate: null,
-    tripType: 'roundtrip',
-    passengers: 1,
-  };
+  const initialValues: FlightSearchFormData = lastSearchData
+    ? {
+        ...lastSearchData,
+        departureDate:
+          lastSearchData.departureDate instanceof Date
+            ? lastSearchData.departureDate
+            : new Date(lastSearchData.departureDate),
+        returnDate: lastSearchData.returnDate
+          ? lastSearchData.returnDate instanceof Date
+            ? lastSearchData.returnDate
+            : new Date(lastSearchData.returnDate)
+          : null,
+      }
+    : {
+        origin: '',
+        destination: '',
+        departureDate: new Date(),
+        returnDate: null,
+        tripType: 'roundtrip',
+        passengers: 1,
+      };
 
   const handleSubmit = async (values: FlightSearchFormData) => {
     try {

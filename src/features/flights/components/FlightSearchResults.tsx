@@ -1,170 +1,22 @@
-import { useFlightSearch } from '@/hooks';
-import type { Flight } from '@/services';
-import {
-  FlightLand as ArrivalIcon,
-  FlightTakeoff as DepartureIcon,
-  Euro as PriceIcon,
-  AccessTime as TimeIcon,
-} from '@mui/icons-material';
+import { useFlightSearchStore } from '../store/flightSearchStore';
+import { FlightCard } from './FlightCard';
 import {
   Box,
-  Card,
-  CardContent,
-  Chip,
   Divider,
-  Stack,
   Typography,
+  CircularProgress,
+  Alert,
+  Stack,
 } from '@mui/material';
 
-interface FlightCardProps {
-  flight: Flight;
-  type: 'outbound' | 'return';
-}
-
-const FlightCard = ({ flight, type }: FlightCardProps) => {
-  const formatTime = (dateTime: string) => {
-    return new Date(dateTime).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
-  };
-
-  const formatDate = (dateTime: string) => {
-    return new Date(dateTime).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-    });
-  };
-
-  return (
-    <Card
-      elevation={2}
-      sx={{
-        mb: 2,
-        border: '1px solid',
-        borderColor: 'divider',
-        '&:hover': {
-          boxShadow: 4,
-          borderColor: 'primary.main',
-        },
-      }}
-    >
-      <CardContent>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            mb: 2,
-          }}
-        >
-          <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
-            {flight.airline}
-          </Typography>
-          <Chip
-            label={type === 'outbound' ? 'Outbound' : 'Return'}
-            color={type === 'outbound' ? 'primary' : 'secondary'}
-            size="small"
-          />
-        </Box>
-
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            alignItems: 'center',
-            gap: 3,
-          }}
-        >
-          <Box sx={{ flex: '1 1 200px', minWidth: 0 }}>
-            <Stack direction="row" alignItems="center" spacing={1}>
-              <DepartureIcon color="action" />
-              <Box>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  {formatTime(flight.departureTime)}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {flight.origin} • {formatDate(flight.departureTime)}
-                </Typography>
-              </Box>
-            </Stack>
-          </Box>
-
-          <Box sx={{ flex: '0 0 120px', textAlign: 'center' }}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              {flight.duration}
-            </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Box sx={{ flexGrow: 1, height: 1, bgcolor: 'divider' }} />
-              <TimeIcon sx={{ mx: 1, fontSize: 16, color: 'text.secondary' }} />
-              <Box sx={{ flexGrow: 1, height: 1, bgcolor: 'divider' }} />
-            </Box>
-            <Typography variant="caption" color="text.secondary">
-              {flight.flightNumber}
-            </Typography>
-          </Box>
-
-          <Box sx={{ flex: '1 1 200px', minWidth: 0 }}>
-            <Stack direction="row" alignItems="center" spacing={1}>
-              <ArrivalIcon color="action" />
-              <Box>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  {formatTime(flight.arrivalTime)}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {flight.destination} • {formatDate(flight.arrivalTime)}
-                </Typography>
-              </Box>
-            </Stack>
-          </Box>
-
-          <Box sx={{ flex: '0 0 100px', textAlign: 'center' }}>
-            <Typography variant="body2" color="text.secondary">
-              {flight.aircraftType}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {flight.availableSeats} seats left
-            </Typography>
-          </Box>
-
-          <Box sx={{ flex: '0 0 100px', textAlign: 'center' }}>
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="center"
-              spacing={0.5}
-            >
-              <PriceIcon sx={{ fontSize: 16 }} />
-              <Typography
-                variant="h5"
-                sx={{ fontWeight: 600, color: 'primary.main' }}
-              >
-                {flight.price.toFixed(2)}
-              </Typography>
-            </Stack>
-            <Typography variant="caption" color="text.secondary">
-              per person
-            </Typography>
-          </Box>
-        </Box>
-      </CardContent>
-    </Card>
-  );
-};
-
 export const FlightSearchResults = () => {
-  const { searchResults, hasSearched, isLoading } = useFlightSearch();
+  const { searchResults, hasSearched, isLoading, searchError } =
+    useFlightSearchStore();
 
   if (isLoading) {
     return (
-      <Box sx={{ textAlign: 'center', py: 4 }}>
+      <Box sx={{ textAlign: 'center', py: 6 }}>
+        <CircularProgress size={48} sx={{ mb: 2 }} />
         <Typography variant="h6" gutterBottom>
           Searching flights...
         </Typography>
@@ -175,17 +27,26 @@ export const FlightSearchResults = () => {
     );
   }
 
-  if (!hasSearched) {
+  if (searchError) {
+    return (
+      <Box sx={{ mt: 4 }}>
+        <Alert severity="error" sx={{ borderRadius: 2 }}>
+          <Typography variant="body1">{searchError}</Typography>
+        </Alert>
+      </Box>
+    );
+  }
+
+  if (!searchResults || !hasSearched) {
     return null;
   }
 
   if (
-    !searchResults ||
-    (searchResults.outboundFlights.length === 0 &&
-      searchResults.returnFlights.length === 0)
+    (searchResults.outboundFlights?.length || 0) === 0 &&
+    (searchResults.returnFlights?.length || 0) === 0
   ) {
     return (
-      <Box sx={{ textAlign: 'center', py: 4 }}>
+      <Box sx={{ textAlign: 'center', py: 6 }}>
         <Typography variant="h6" gutterBottom>
           No flights found
         </Typography>
@@ -197,50 +58,73 @@ export const FlightSearchResults = () => {
   }
 
   const { outboundFlights, returnFlights, metadata } = searchResults;
+  const totalFlights = outboundFlights.length + returnFlights.length;
 
   return (
     <Box sx={{ mt: 4 }}>
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h5" component="h2" sx={{ fontWeight: 600, mb: 1 }}>
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" component="h2" sx={{ fontWeight: 700, mb: 1 }}>
           Flight Results
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Found {metadata.totalResults} flights • Search ID: {metadata.searchId}
+        <Typography variant="body1" color="text.secondary">
+          Found {totalFlights} available flights
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          Search performed on{' '}
+          {new Date(metadata.searchTime).toLocaleString('en-US')}
         </Typography>
       </Box>
 
       {outboundFlights.length > 0 && (
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-            Outbound Flights
+          <Typography
+            variant="h5"
+            sx={{ mb: 3, fontWeight: 600, color: 'primary.main' }}
+          >
+            Outbound Flights ({outboundFlights.length})
           </Typography>
-          {outboundFlights.map((flight, index) => (
-            <FlightCard
-              key={`outbound-${index}`}
-              flight={flight}
-              type="outbound"
-            />
-          ))}
+          <Stack spacing={2}>
+            {outboundFlights.map((flight, index) => (
+              <FlightCard
+                key={`outbound-${flight.flightNumber}-${index}`}
+                flight={flight}
+                currency={metadata.currency}
+              />
+            ))}
+          </Stack>
         </Box>
       )}
 
       {returnFlights.length > 0 && (
         <>
-          <Divider sx={{ my: 3 }} />
+          <Divider sx={{ my: 4 }} />
           <Box>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-              Return Flights
+            <Typography
+              variant="h5"
+              sx={{ mb: 3, fontWeight: 600, color: 'secondary.main' }}
+            >
+              Return Flights ({returnFlights.length})
             </Typography>
-            {returnFlights.map((flight, index) => (
-              <FlightCard
-                key={`return-${index}`}
-                flight={flight}
-                type="return"
-              />
-            ))}
+            <Stack spacing={2}>
+              {returnFlights.map((flight, index) => (
+                <FlightCard
+                  key={`return-${flight.flightNumber}-${index}`}
+                  flight={flight}
+                  currency={metadata.currency}
+                />
+              ))}
+            </Stack>
           </Box>
         </>
       )}
+
+      <Box
+        sx={{ mt: 4, pt: 3, borderTop: '1px solid', borderColor: 'divider' }}
+      >
+        <Typography variant="caption" color="text.secondary">
+          Search ID: {metadata.searchId} • Currency: {metadata.currency}
+        </Typography>
+      </Box>
     </Box>
   );
 };

@@ -27,15 +27,27 @@ export const useFlightSearch = () => {
     }));
 
     try {
-      const data = await flightService.searchFlights(searchData);
-      const results = data.data;
+      const response = await flightService.searchFlights(searchData);
 
-      setState((prev) => ({
-        ...prev,
+      if (!response.success) {
+        throw new Error(response.error || 'Search failed');
+      }
+
+      const results = response.data;
+
+      setState({
         searchResults: results,
         isLoading: false,
         hasSearched: true,
-      }));
+        searchError: null,
+      });
+
+      const totalFlights =
+        results.outboundFlights.length + results.returnFlights.length;
+      notifications.success(
+        response.message ||
+          `Found ${totalFlights} flights for your search from ${searchData.origin} to ${searchData.destination}`
+      );
 
       return results;
     } catch (error) {
