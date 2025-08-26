@@ -1,7 +1,7 @@
 import type { LoginFormData } from '@/features/auth/schemas';
 import type { AuthState, User } from '@/lib/types';
 import { UserRole } from '@/lib/types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const MOCK_USERS: User[] = [
   {
@@ -22,10 +22,20 @@ export const useAuth = () => {
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     isAuthenticated: false,
-    isLoading: false,
+    isLoading: true,
   });
 
   const [loginError, setLoginError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Simulate checking for existing session
+    const checkAuthStatus = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setAuthState((prev) => ({ ...prev, isLoading: false }));
+    };
+
+    checkAuthStatus();
+  }, []);
 
   const login = async (credentials: LoginFormData) => {
     setAuthState((prev) => ({ ...prev, isLoading: true }));

@@ -1,4 +1,5 @@
-import { UserRole } from '@/lib/types';
+import { useAuth } from '@/hooks';
+import type { UserRole } from '@/lib/types';
 import { Box, CircularProgress } from '@mui/material';
 import type { ReactNode } from 'react';
 
@@ -9,16 +10,7 @@ interface AuthWrapperProps {
   loadingComponent?: ReactNode;
 }
 
-const mockAuthState = {
-  user: {
-    id: '1',
-    email: 'admin@amadeus.com',
-    name: 'Admin User',
-    role: UserRole.ADMIN,
-  },
-  isAuthenticated: true,
-  isLoading: false,
-};
+// AuthWrapper now uses useAuth hook instead of mock state
 
 export const AuthWrapper = ({
   children,
@@ -26,7 +18,7 @@ export const AuthWrapper = ({
   fallback,
   loadingComponent,
 }: AuthWrapperProps) => {
-  const { user, isAuthenticated, isLoading } = mockAuthState;
+  const { user, isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
     return (
