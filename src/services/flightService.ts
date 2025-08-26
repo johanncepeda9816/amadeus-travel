@@ -23,9 +23,14 @@ export interface SearchMetadata {
 }
 
 export interface FlightSearchResponse {
-  outboundFlights: Flight[];
-  returnFlights: Flight[];
-  metadata: SearchMetadata;
+  data: {
+    outboundFlights: Flight[];
+    returnFlights: Flight[];
+    metadata: SearchMetadata;
+    error?: string;
+    message?: string;
+    success: boolean;
+  };
 }
 
 export interface FlightSearchRequest {
@@ -35,7 +40,6 @@ export interface FlightSearchRequest {
   returnDate?: string | null;
   tripType: string;
   passengers: number;
-  rooms: number;
 }
 
 const transformFormDataToRequest = (
@@ -50,7 +54,6 @@ const transformFormDataToRequest = (
       : null,
     tripType: formData.tripType,
     passengers: formData.passengers,
-    rooms: formData.rooms,
   };
 };
 

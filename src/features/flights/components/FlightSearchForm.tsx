@@ -25,7 +25,6 @@ export const FlightSearchForm = () => {
     returnDate: null,
     tripType: 'roundtrip',
     passengers: 1,
-    rooms: 1,
   };
 
   const handleSubmit = async (values: FlightSearchFormData) => {
@@ -131,15 +130,6 @@ export const FlightSearchForm = () => {
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                       <MenuItem key={num} value={num}>
                         {num} {num === 1 ? 'Passenger' : 'Passengers'}
-                      </MenuItem>
-                    ))}
-                  </SelectInput>
-                </Box>
-                <Box sx={{ flex: 1, minWidth: 150 }}>
-                  <SelectInput name="rooms" label="Rooms" useFormik>
-                    {[1, 2, 3, 4, 5].map((num) => (
-                      <MenuItem key={num} value={num}>
-                        {num} {num === 1 ? 'Room' : 'Rooms'}
                       </MenuItem>
                     ))}
                   </SelectInput>

@@ -5,7 +5,7 @@ import { flightService } from '@/services';
 import { useState } from 'react';
 
 interface UseFlightSearchState {
-  searchResults: FlightSearchResponse | null;
+  searchResults: FlightSearchResponse['data'] | null;
   isLoading: boolean;
   searchError: string | null;
   hasSearched: boolean;
@@ -27,7 +27,8 @@ export const useFlightSearch = () => {
     }));
 
     try {
-      const results = await flightService.searchFlights(searchData);
+      const data = await flightService.searchFlights(searchData);
+      const results = data.data;
 
       setState((prev) => ({
         ...prev,
@@ -35,12 +36,6 @@ export const useFlightSearch = () => {
         isLoading: false,
         hasSearched: true,
       }));
-
-      const totalFlights =
-        results.outboundFlights.length + results.returnFlights.length;
-      notifications.success(
-        `Found ${totalFlights} flights for your search from ${searchData.origin} to ${searchData.destination}`
-      );
 
       return results;
     } catch (error) {

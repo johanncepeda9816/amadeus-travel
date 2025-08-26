@@ -37,12 +37,6 @@ export const flightSearchSchema = yup.object({
     .min(1, 'At least 1 passenger is required')
     .max(9, 'Maximum 9 passengers allowed')
     .integer('Number of passengers must be a whole number'),
-  rooms: yup
-    .number()
-    .required('Number of rooms is required')
-    .min(1, 'At least 1 room is required')
-    .max(5, 'Maximum 5 rooms allowed')
-    .integer('Number of rooms must be a whole number'),
 });
 
 export type FlightSearchFormData = yup.InferType<typeof flightSearchSchema>;
