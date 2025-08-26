@@ -1,6 +1,7 @@
 import type { LoginFormData } from '@/features/auth/schemas';
+import { UserRole, notifications } from '@/lib';
 import type { AuthState, User } from '@/lib/types';
-import { UserRole } from '@/lib/types';
+import { tokenManager } from '@/services';
 import { useState } from 'react';
 
 const MOCK_USERS: User[] = [
@@ -40,12 +41,17 @@ export const useAuth = () => {
         throw new Error('Invalid credentials');
       }
 
+      // Mock token for demo
+      const mockToken = `mock_token_${user.id}_${Date.now()}`;
+      tokenManager.set(mockToken);
+
       setAuthState({
         user,
         isAuthenticated: true,
         isLoading: false,
       });
 
+      notifications.success(`Welcome back, ${user.name}!`);
       return { success: true };
     } catch (error) {
       const errorMessage =
@@ -62,12 +68,14 @@ export const useAuth = () => {
   };
 
   const logout = () => {
+    tokenManager.remove();
     setAuthState({
       user: null,
       isAuthenticated: false,
       isLoading: false,
     });
     setLoginError(null);
+    notifications.info('You have been logged out');
   };
 
   const clearError = () => {
