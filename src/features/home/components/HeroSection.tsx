@@ -42,7 +42,7 @@ export const HeroSection = () => {
             opacity: 0.8,
           }}
         >
-          Start your journey today - no account required to browse
+          Start your journey today
         </Typography>
       </Container>
     </Box>

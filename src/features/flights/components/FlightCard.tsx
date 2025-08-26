@@ -66,16 +66,25 @@ export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
         borderColor: 'divider',
       }}
     >
-      <CardContent sx={{ p: 3 }}>
-        <Stack spacing={2}>
+      <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+        <Stack spacing={{ xs: 3, sm: 2 }}>
           <Box
             sx={{
               display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' },
               justifyContent: 'space-between',
-              alignItems: 'center',
+              alignItems: { xs: 'flex-start', sm: 'center' },
+              gap: { xs: 2, sm: 0 },
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                flexWrap: 'wrap',
+              }}
+            >
               <FlightIcon color="primary" />
               <Typography variant="h6" fontWeight="600">
                 {flight.airline}
@@ -87,7 +96,14 @@ export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
                 color="primary"
               />
             </Box>
-            <Typography variant="h5" fontWeight="700" color="primary">
+            <Typography
+              fontWeight="700"
+              color="primary"
+              sx={{
+                alignSelf: { xs: 'flex-end', sm: 'auto' },
+                fontSize: { xs: '1.25rem', sm: '1.5rem' },
+              }}
+            >
               {formatPrice(flight.price)}
             </Typography>
           </Box>
@@ -95,18 +111,33 @@ export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
           <Box
             sx={{
               display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
               alignItems: 'center',
-              justifyContent: 'space-between',
+              gap: { xs: 3, md: 0 },
             }}
           >
-            <Box sx={{ textAlign: 'center', flex: 1 }}>
-              <Typography variant="h4" fontWeight="700" color="text.primary">
+            <Box
+              sx={{
+                textAlign: 'center',
+                flex: { md: 1 },
+                width: { xs: '100%', md: 'auto' },
+              }}
+            >
+              <Typography
+                fontWeight="700"
+                color="text.primary"
+                sx={{ fontSize: { xs: '1.5rem', md: '2rem' } }}
+              >
                 {formatTime(flight.departureTime)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {formatDate(flight.departureTime)}
               </Typography>
-              <Typography variant="h6" fontWeight="600" color="text.primary">
+              <Typography
+                fontWeight="600"
+                color="text.primary"
+                sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }}
+              >
                 {flight.origin}
               </Typography>
             </Box>
@@ -114,11 +145,14 @@ export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
             <Box
               sx={{
                 textAlign: 'center',
-                flex: 1,
+                flex: { md: 1 },
                 display: 'flex',
-                flexDirection: 'column',
+                flexDirection: { xs: 'row', md: 'column' },
                 alignItems: 'center',
+                justifyContent: { xs: 'space-between', md: 'center' },
                 gap: 1,
+                width: { xs: '100%', md: 'auto' },
+                px: { xs: 2, md: 0 },
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
@@ -129,10 +163,11 @@ export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
               </Box>
               <Box
                 sx={{
-                  width: '60px',
+                  width: { xs: '40px', md: '60px' },
                   height: '2px',
                   bgcolor: 'primary.main',
                   borderRadius: 1,
+                  display: { xs: 'none', md: 'block' },
                 }}
               />
               <Typography variant="caption" color="text.secondary">
@@ -140,14 +175,28 @@ export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
               </Typography>
             </Box>
 
-            <Box sx={{ textAlign: 'center', flex: 1 }}>
-              <Typography variant="h4" fontWeight="700" color="text.primary">
+            <Box
+              sx={{
+                textAlign: 'center',
+                flex: { md: 1 },
+                width: { xs: '100%', md: 'auto' },
+              }}
+            >
+              <Typography
+                fontWeight="700"
+                color="text.primary"
+                sx={{ fontSize: { xs: '1.5rem', md: '2rem' } }}
+              >
                 {formatTime(flight.arrivalTime)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {formatDate(flight.arrivalTime)}
               </Typography>
-              <Typography variant="h6" fontWeight="600" color="text.primary">
+              <Typography
+                fontWeight="600"
+                color="text.primary"
+                sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }}
+              >
                 {flight.destination}
               </Typography>
             </Box>
@@ -158,18 +207,34 @@ export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
           <Box
             sx={{
               display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' },
               justifyContent: 'space-between',
-              alignItems: 'center',
+              alignItems: { xs: 'stretch', sm: 'center' },
+              gap: { xs: 2, sm: 0 },
             }}
           >
-            <Box sx={{ display: 'flex', gap: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                gap: { xs: 1, sm: 2 },
+                alignItems: { xs: 'flex-start', sm: 'center' },
+              }}
+            >
               <Chip
                 label={flight.cabinClass}
                 size="small"
                 color="secondary"
                 variant="outlined"
               />
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 0.5,
+                  flexWrap: 'wrap',
+                }}
+              >
                 <AirlineSeatReclineNormal fontSize="small" color="action" />
                 <Typography variant="body2" color="text.secondary">
                   {flight.availableSeats} seats
@@ -197,8 +262,11 @@ export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
                 '&:hover': {
                   bgcolor: 'primary.dark',
                 },
-                px: 3,
+                px: { xs: 2, sm: 3 },
+                py: { xs: 1.5, sm: 1 },
                 borderRadius: 2,
+                width: { xs: '100%', sm: 'auto' },
+                mt: { xs: 1, sm: 0 },
               }}
             >
               <Typography variant="button" fontWeight="600">
