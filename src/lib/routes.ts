@@ -9,6 +9,12 @@ export interface AppRoute {
 }
 
 export const APP_ROUTES = {
+  HOME: {
+    path: '/',
+    name: 'Home',
+    allowedRoles: [UserRole.ADMIN, UserRole.USER],
+    isPublic: true,
+  },
   LOGIN: {
     path: '/login',
     name: 'Login',

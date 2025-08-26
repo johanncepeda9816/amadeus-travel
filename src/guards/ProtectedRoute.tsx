@@ -9,6 +9,10 @@ interface ProtectedRouteProps {
   requiredRole?: UserRole;
 }
 
+// ProtectedRoute: For routes that require authentication
+// Will be used for: /bookings, /profile, /admin, etc.
+// Public routes like / and /login don't need this guard
+
 export const ProtectedRoute = ({
   children,
   requiredRole,
