@@ -6,7 +6,6 @@ import {
   Typography,
   Stack,
   Divider,
-  IconButton,
 } from '@mui/material';
 import {
   Flight as FlightIcon,
@@ -21,35 +20,47 @@ interface FlightCardProps {
 }
 
 export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
-  const formatTime = (dateTimeString: string) => {
-    const date = new Date(dateTimeString);
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
-  };
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: currency,
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
-
-  const formatDate = (dateTimeString: string) => {
-    const date = new Date(dateTimeString);
-    return date.toLocaleDateString('en-US', {
-      day: '2-digit',
-      month: 'short',
-    });
+  const formatters = {
+    time: (dateTimeString: string) => {
+      const date = new Date(dateTimeString);
+      return date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+    },
+    price: (price: number) => {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: currency,
+        minimumFractionDigits: 0,
+      }).format(price);
+    },
+    date: (dateTimeString: string) => {
+      const date = new Date(dateTimeString);
+      return date.toLocaleDateString('en-US', {
+        day: '2-digit',
+        month: 'short',
+      });
+    },
   };
 
   const getAvailabilityColor = (seats: number) => {
     if (seats > 20) return 'success';
     if (seats > 10) return 'warning';
     return 'error';
+  };
+
+  const timeTypographyProps = {
+    fontWeight: '700',
+    color: 'text.primary',
+    sx: { fontSize: { xs: '1.5rem', md: '2rem' } },
+  };
+
+  const locationTypographyProps = {
+    fontWeight: '600',
+    color: 'text.primary',
+    sx: { fontSize: { xs: '1rem', md: '1.25rem' } },
   };
 
   return (
@@ -104,7 +115,7 @@ export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
                 fontSize: { xs: '1.25rem', sm: '1.5rem' },
               }}
             >
-              {formatPrice(flight.price)}
+              {formatters.price(flight.price)}
             </Typography>
           </Box>
 
@@ -123,21 +134,13 @@ export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
                 width: { xs: '100%', md: 'auto' },
               }}
             >
-              <Typography
-                fontWeight="700"
-                color="text.primary"
-                sx={{ fontSize: { xs: '1.5rem', md: '2rem' } }}
-              >
-                {formatTime(flight.departureTime)}
+              <Typography {...timeTypographyProps}>
+                {formatters.time(flight.departureTime)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {formatDate(flight.departureTime)}
+                {formatters.date(flight.departureTime)}
               </Typography>
-              <Typography
-                fontWeight="600"
-                color="text.primary"
-                sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }}
-              >
+              <Typography {...locationTypographyProps}>
                 {flight.origin}
               </Typography>
             </Box>
@@ -182,21 +185,13 @@ export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
                 width: { xs: '100%', md: 'auto' },
               }}
             >
-              <Typography
-                fontWeight="700"
-                color="text.primary"
-                sx={{ fontSize: { xs: '1.5rem', md: '2rem' } }}
-              >
-                {formatTime(flight.arrivalTime)}
+              <Typography {...timeTypographyProps}>
+                {formatters.time(flight.arrivalTime)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {formatDate(flight.arrivalTime)}
+                {formatters.date(flight.arrivalTime)}
               </Typography>
-              <Typography
-                fontWeight="600"
-                color="text.primary"
-                sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }}
-              >
+              <Typography {...locationTypographyProps}>
                 {flight.destination}
               </Typography>
             </Box>
@@ -254,25 +249,49 @@ export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
               </Box>
             </Box>
 
-            <IconButton
-              color="primary"
+            <Box
+              component="button"
               sx={{
-                bgcolor: 'primary.main',
-                color: 'white',
-                '&:hover': {
-                  bgcolor: 'primary.dark',
-                },
-                px: { xs: 2, sm: 3 },
-                py: { xs: 1.5, sm: 1 },
-                borderRadius: 2,
+                all: 'unset',
+                cursor: 'pointer',
                 width: { xs: '100%', sm: 'auto' },
                 mt: { xs: 1, sm: 0 },
+                '&:focus': {
+                  outline: 'none',
+                },
+                '&:focus-visible': {
+                  outline: 'none',
+                },
               }}
             >
-              <Typography variant="button" fontWeight="600">
+              <Box
+                sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  px: { xs: 2, sm: 3 },
+                  py: { xs: 1.5, sm: 1 },
+                  borderRadius: 2,
+                  bgcolor: 'primary.main',
+                  color: 'white',
+                  fontWeight: 600,
+                  fontSize: '0.875rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.02857em',
+                  width: '100%',
+                  transition: 'all 0.2s ease-in-out',
+                  '&:hover': {
+                    bgcolor: 'primary.dark',
+                    transform: 'translateY(-1px)',
+                  },
+                  '&:active': {
+                    transform: 'translateY(0)',
+                  },
+                }}
+              >
                 Select
-              </Typography>
-            </IconButton>
+              </Box>
+            </Box>
           </Box>
         </Stack>
       </CardContent>

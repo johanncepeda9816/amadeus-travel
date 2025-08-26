@@ -16,7 +16,7 @@ import type { FlightSearchFormData } from '../schemas';
 import { flightSearchSchema } from '../schemas';
 
 export const FlightSearchForm = () => {
-  const { searchFlights, isLoading, clearError, lastSearchData } =
+  const { searchFlights, isLoading, clearError, clearSearch, lastSearchData } =
     useFlightSearchStore();
 
   const initialValues: FlightSearchFormData = lastSearchData
@@ -50,6 +50,28 @@ export const FlightSearchForm = () => {
     }
   };
 
+  const defaultButtonProps = {
+    size: 'large' as const,
+    sx: { flex: { xs: 1, sm: 'auto' } },
+  };
+
+  const clearSearchAction = (
+    resetForm: (nextState?: Partial<unknown>) => void
+  ) => {
+    clearSearch();
+    clearError();
+    resetForm({
+      values: {
+        origin: '',
+        destination: '',
+        departureDate: new Date(),
+        returnDate: null,
+        tripType: 'roundtrip',
+        passengers: 1,
+      },
+    });
+  };
+
   return (
     <Paper
       elevation={2}
@@ -67,8 +89,9 @@ export const FlightSearchForm = () => {
         initialValues={initialValues}
         validationSchema={flightSearchSchema}
         onSubmit={handleSubmit}
+        enableReinitialize={true}
       >
-        {({ values, setFieldValue }) => (
+        {({ values, setFieldValue, resetForm }) => (
           <Form>
             <Stack spacing={3}>
               <FormControl component="fieldset">
@@ -150,26 +173,38 @@ export const FlightSearchForm = () => {
                 </Box>
               </Box>
 
-              <BaseButton
-                type="submit"
-                variant="contained"
-                size="large"
-                loading={isLoading}
-                fullWidth
+              <Box
                 sx={{
-                  py: 1.5,
-                  fontSize: '1.1rem',
-                  fontWeight: 600,
-                  background:
-                    'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',
-                  '&:hover': {
-                    background:
-                      'linear-gradient(135deg, #1565c0 0%, #1976d2 100%)',
-                  },
+                  display: 'flex',
+                  gap: 2,
+                  flexDirection: { xs: 'column', sm: 'row' },
                 }}
               >
-                Search Flights
-              </BaseButton>
+                <BaseButton
+                  {...defaultButtonProps}
+                  type="button"
+                  variant="outlined"
+                  onClick={() => clearSearchAction(resetForm)}
+                  sx={{
+                    ...defaultButtonProps.sx,
+                    minWidth: { sm: '140px' },
+                  }}
+                >
+                  Clear Search
+                </BaseButton>
+                <BaseButton
+                  {...defaultButtonProps}
+                  type="submit"
+                  variant="contained"
+                  loading={isLoading}
+                  sx={{
+                    ...defaultButtonProps.sx,
+                    flex: 1,
+                  }}
+                >
+                  Search Flights
+                </BaseButton>
+              </Box>
             </Stack>
           </Form>
         )}
