@@ -4,7 +4,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 const TOKEN_COOKIE_NAME = 'amadeus_token';
 
 const api = axios.create({

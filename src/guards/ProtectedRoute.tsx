@@ -1,3 +1,4 @@
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useAuth } from '@/hooks';
 import { APP_ROUTES } from '@/lib';
 import type { UserRole } from '@/lib/types';
@@ -20,7 +21,7 @@ export const ProtectedRoute = ({
   const { isAuthenticated, user, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner message="Checking authentication..." />;
   }
 
   if (!isAuthenticated || !user) {

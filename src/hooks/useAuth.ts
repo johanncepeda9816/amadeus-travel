@@ -1,58 +1,70 @@
 import type { LoginFormData } from '@/features/auth/schemas';
-import { UserRole, notifications } from '@/lib';
-import type { AuthState, User } from '@/lib/types';
-import { tokenManager } from '@/services';
-import { useState } from 'react';
-
-const MOCK_USERS: User[] = [
-  {
-    id: '1',
-    email: 'admin@amadeus.com',
-    name: 'Admin User',
-    role: UserRole.ADMIN,
-  },
-  {
-    id: '2',
-    email: 'user@amadeus.com',
-    name: 'Regular User',
-    role: UserRole.USER,
-  },
-];
+import { notifications } from '@/lib';
+import type { AuthState } from '@/lib/types';
+import { authService, tokenManager } from '@/services';
+import { useEffect, useState } from 'react';
 
 export const useAuth = () => {
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     isAuthenticated: false,
-    isLoading: false,
+    isLoading: true,
   });
 
   const [loginError, setLoginError] = useState<string | null>(null);
+
+  // Check for existing token on app load
+  useEffect(() => {
+    const checkExistingAuth = async () => {
+      const token = tokenManager.get();
+
+      if (!token) {
+        setAuthState((prev) => ({ ...prev, isLoading: false }));
+        return;
+      }
+
+      try {
+        const response = await authService.getCurrentUser();
+        if (response.success) {
+          setAuthState({
+            user: response.data,
+            isAuthenticated: true,
+            isLoading: false,
+          });
+        } else {
+          tokenManager.remove();
+          setAuthState((prev) => ({ ...prev, isLoading: false }));
+        }
+      } catch {
+        tokenManager.remove();
+        setAuthState((prev) => ({ ...prev, isLoading: false }));
+      }
+    };
+
+    checkExistingAuth();
+  }, []);
 
   const login = async (credentials: LoginFormData) => {
     setAuthState((prev) => ({ ...prev, isLoading: true }));
     setLoginError(null);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await authService.login(credentials);
 
-      const user = MOCK_USERS.find((u) => u.email === credentials.email);
+      if (response.success) {
+        tokenManager.set(response.data.token);
 
-      if (!user || credentials.password !== 'password123') {
-        throw new Error('Invalid credentials');
+        setAuthState({
+          user: response.data.user,
+          isAuthenticated: true,
+          isLoading: false,
+        });
+
+        notifications.success(`Welcome back, ${response.data.user.name}!`);
+        return { success: true };
+      } else {
+        throw new Error('Login failed');
       }
-
-      // Mock token for demo
-      const mockToken = `mock_token_${user.id}_${Date.now()}`;
-      tokenManager.set(mockToken);
-
-      setAuthState({
-        user,
-        isAuthenticated: true,
-        isLoading: false,
-      });
-
-      notifications.success(`Welcome back, ${user.name}!`);
-      return { success: true };
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Login failed';
@@ -67,15 +79,22 @@ export const useAuth = () => {
     }
   };
 
-  const logout = () => {
-    tokenManager.remove();
-    setAuthState({
-      user: null,
-      isAuthenticated: false,
-      isLoading: false,
-    });
-    setLoginError(null);
-    notifications.info('You have been logged out');
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      // Ignore logout errors, proceed with local cleanup
+      console.warn('Logout request failed:', error);
+    } finally {
+      tokenManager.remove();
+      setAuthState({
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+      });
+      setLoginError(null);
+      notifications.info('You have been logged out');
+    }
   };
 
   const clearError = () => {
