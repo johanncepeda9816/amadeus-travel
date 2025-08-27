@@ -69,6 +69,9 @@ export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
       elevation={2}
       sx={{
         borderRadius: 2,
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
         '&:hover': {
           elevation: 4,
           transform: 'translateY(-2px)',
@@ -78,8 +81,15 @@ export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
         borderColor: 'divider',
       }}
     >
-      <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
-        <Stack spacing={{ xs: 3, sm: 2 }}>
+      <CardContent
+        sx={{
+          p: { xs: 2, sm: 3 },
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <Stack spacing={{ xs: 3, sm: 2 }} sx={{ flex: 1 }}>
           <Box
             sx={{
               display: 'flex',

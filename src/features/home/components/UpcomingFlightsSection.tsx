@@ -1,4 +1,4 @@
-import { FlightCard } from '@/features/flights/components/FlightCard';
+import { FlightCardSummary } from '@/features/flights/components/FlightCardSummary';
 import { useUpcomingFlights } from '@/hooks/useUpcomingFlights';
 import { Box, CircularProgress, Grid, Typography } from '@mui/material';
 
@@ -14,7 +14,7 @@ export const UpcomingFlightsSection = () => {
   }
 
   return (
-    <Grid container maxWidth={'lg'} sx={{ mx: 'auto' }}>
+    <Grid container maxWidth={'lg'} sx={{ mx: 'auto', px: 4 }}>
       <Typography
         variant="h4"
         sx={{
@@ -26,10 +26,19 @@ export const UpcomingFlightsSection = () => {
       >
         Upcoming Flights
       </Typography>
-      <Grid container spacing={2}>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          width: '100%',
+          flexWrap: 'wrap',
+        }}
+      >
         {upcomingFlights.map((flight) => (
-          <Grid size={4} key={flight.flightNumber}>
-            <FlightCard flight={flight} />
+          <Grid size={4} key={flight.flightNumber} sx={{ display: 'flex' }}>
+            <FlightCardSummary flight={flight} />
           </Grid>
         ))}
       </Grid>

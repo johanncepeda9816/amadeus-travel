@@ -36,7 +36,18 @@ export const SearchSection = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 6, mt: 8 }}>
+    <Container maxWidth="lg">
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: 'bold',
+          color: 'primary.main',
+          mt: 8,
+          mb: 10,
+        }}
+      >
+        Search for your next flight
+      </Typography>
       <Paper
         elevation={3}
         sx={{
