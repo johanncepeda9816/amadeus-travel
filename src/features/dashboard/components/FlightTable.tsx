@@ -1,6 +1,6 @@
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import type { GridColDef, GridRowParams } from '@mui/x-data-grid';
-import { Box, Chip, Typography } from '@mui/material';
+import { Box, Chip } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import type { AdminFlight } from '@/types/flights';
 import { useAdminFlights } from '@/hooks';
@@ -117,10 +117,6 @@ export const FlightTable = ({ onEdit, onDelete }: FlightTableProps) => {
 
   return (
     <Box>
-      <Typography variant="h6" gutterBottom>
-        Flight Management
-      </Typography>
-
       <Box sx={{ height: 600, width: '100%' }}>
         <DataGrid
           rows={flights}
