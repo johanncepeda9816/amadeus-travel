@@ -16,6 +16,10 @@ export interface FlightListParams {
   sortDir?: 'asc' | 'desc';
 }
 
+export interface FlightSearchParams extends FlightListParams {
+  searchTerm?: string;
+}
+
 export const createFlight = async (
   flightData: CreateFlightRequest
 ): Promise<AdminFlightResponse> => {
@@ -46,6 +50,37 @@ export const getFlights = async (
   return response.data;
 };
 
+export const searchFlights = async (
+  params: FlightSearchParams = {}
+): Promise<AdminFlightsResponse> => {
+  const {
+    searchTerm,
+    page = 0,
+    size = 20,
+    sortBy = 'departureTime',
+    sortDir = 'desc',
+  } = params;
+
+  const queryParams: Record<string, string | number | undefined> = {
+    page,
+    size,
+    sortBy,
+    sortDir,
+  };
+
+  if (searchTerm && searchTerm.trim()) {
+    queryParams.searchTerm = searchTerm.trim();
+  }
+
+  const response = await api.get<AdminFlightsResponse>(
+    '/flights/search/admin',
+    {
+      params: queryParams,
+    }
+  );
+  return response.data;
+};
+
 export const updateFlight = async (
   id: number,
   flightData: UpdateFlightRequest
@@ -68,6 +103,7 @@ export const adminFlightService = {
   createFlight,
   getFlightById,
   getFlights,
+  searchFlights,
   updateFlight,
   deleteFlight,
 };

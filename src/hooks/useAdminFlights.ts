@@ -1,6 +1,6 @@
 import { notifications } from '@/lib';
 import { adminFlightService } from '@/services';
-import type { FlightListParams } from '@/services/adminFlightService';
+import type { FlightSearchParams } from '@/services/adminFlightService';
 import type {
   AdminFlight,
   AdminFlightsResponse,
@@ -15,6 +15,7 @@ interface UseAdminFlightsState {
   totalPages: number;
   currentPage: number;
   pageSize: number;
+  searchTerm: string;
   isLoading: boolean;
   isCreating: boolean;
   isUpdating: boolean;
@@ -29,6 +30,7 @@ export const useAdminFlights = () => {
     totalPages: 0,
     currentPage: 0,
     pageSize: 20,
+    searchTerm: '',
     isLoading: false,
     isCreating: false,
     isUpdating: false,
@@ -36,12 +38,12 @@ export const useAdminFlights = () => {
     error: null,
   });
 
-  const fetchFlights = useCallback(async (params?: FlightListParams) => {
+  const fetchFlights = useCallback(async (params?: FlightSearchParams) => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
       const response: AdminFlightsResponse =
-        await adminFlightService.getFlights(params);
+        await adminFlightService.searchFlights(params);
 
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch flights');
@@ -83,7 +85,11 @@ export const useAdminFlights = () => {
       setState((prev) => ({ ...prev, isCreating: false }));
       notifications.success('Flight created successfully');
 
-      await fetchFlights({ page: state.currentPage, size: state.pageSize });
+      await fetchFlights({
+        page: state.currentPage,
+        size: state.pageSize,
+        searchTerm: state.searchTerm || undefined,
+      });
 
       return response.data;
     } catch (error) {
@@ -115,7 +121,11 @@ export const useAdminFlights = () => {
       setState((prev) => ({ ...prev, isUpdating: false }));
       notifications.success('Flight updated successfully');
 
-      await fetchFlights({ page: state.currentPage, size: state.pageSize });
+      await fetchFlights({
+        page: state.currentPage,
+        size: state.pageSize,
+        searchTerm: state.searchTerm || undefined,
+      });
 
       return response.data;
     } catch (error) {
@@ -144,7 +154,11 @@ export const useAdminFlights = () => {
       setState((prev) => ({ ...prev, isDeleting: false }));
       notifications.success('Flight deleted successfully');
 
-      await fetchFlights({ page: state.currentPage, size: state.pageSize });
+      await fetchFlights({
+        page: state.currentPage,
+        size: state.pageSize,
+        searchTerm: state.searchTerm || undefined,
+      });
 
       return true;
     } catch (error) {
@@ -182,8 +196,29 @@ export const useAdminFlights = () => {
   };
 
   const refreshFlights = () => {
-    fetchFlights({ page: state.currentPage, size: state.pageSize });
+    fetchFlights({
+      page: state.currentPage,
+      size: state.pageSize,
+      searchTerm: state.searchTerm || undefined,
+    });
   };
+
+  const searchFlights = useCallback(
+    (searchTerm: string) => {
+      setState((prev) => ({ ...prev, searchTerm, currentPage: 0 }));
+      fetchFlights({
+        page: 0,
+        size: state.pageSize,
+        searchTerm: searchTerm || undefined,
+      });
+    },
+    [fetchFlights, state.pageSize]
+  );
+
+  const clearSearch = useCallback(() => {
+    setState((prev) => ({ ...prev, searchTerm: '', currentPage: 0 }));
+    fetchFlights({ page: 0, size: state.pageSize });
+  }, [fetchFlights, state.pageSize]);
 
   return {
     flights: state.flights,
@@ -191,12 +226,15 @@ export const useAdminFlights = () => {
     totalPages: state.totalPages,
     currentPage: state.currentPage,
     pageSize: state.pageSize,
+    searchTerm: state.searchTerm,
     isLoading: state.isLoading,
     isCreating: state.isCreating,
     isUpdating: state.isUpdating,
     isDeleting: state.isDeleting,
     error: state.error,
     fetchFlights,
+    searchFlights,
+    clearSearch,
     createFlight,
     updateFlight,
     deleteFlight,
