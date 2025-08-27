@@ -38,7 +38,15 @@ api.interceptors.response.use(
     return response;
   },
   (error: AxiosError) => {
-    const { response } = error;
+    const { response, config } = error;
+
+    console.log('🚨 API Error Debug:', {
+      url: config?.url,
+      status: response?.status,
+      statusText: response?.statusText,
+      responseData: response?.data,
+      requestHeaders: config?.headers,
+    });
 
     if (!response) {
       notifications.error('Network error - please check your connection');

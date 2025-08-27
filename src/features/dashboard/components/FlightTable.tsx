@@ -1,10 +1,10 @@
-import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
-import type { GridColDef, GridRowParams } from '@mui/x-data-grid';
-import { Box, Chip } from '@mui/material';
-import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { DataGrid } from '@mui/x-data-grid';
+import { Box } from '@mui/material';
 import type { AdminFlight } from '@/types/flights';
 import { useAdminFlights } from '@/hooks';
 import { LoadingSpinner } from '@/components';
+import { columns } from '../constants/flights-columns';
+import { useEffect } from 'react';
 
 interface FlightTableProps {
   onEdit: (flight: AdminFlight) => void;
@@ -21,95 +21,9 @@ export const FlightTable = ({ onEdit, onDelete }: FlightTableProps) => {
     fetchFlights,
   } = useAdminFlights();
 
-  const columns: GridColDef[] = [
-    {
-      field: 'flightNumber',
-      headerName: 'Flight Number',
-      width: 130,
-    },
-    {
-      field: 'airline',
-      headerName: 'Airline',
-      width: 150,
-    },
-    {
-      field: 'origin',
-      headerName: 'Origin',
-      width: 120,
-    },
-    {
-      field: 'destination',
-      headerName: 'Destination',
-      width: 120,
-    },
-    {
-      field: 'departureTime',
-      headerName: 'Departure',
-      width: 180,
-      valueFormatter: (params: { value: string }) => {
-        return new Date(params.value).toLocaleString('en-US', {
-          dateStyle: 'short',
-          timeStyle: 'short',
-        });
-      },
-    },
-    {
-      field: 'arrivalTime',
-      headerName: 'Arrival',
-      width: 180,
-      valueFormatter: (params: { value: string }) => {
-        return new Date(params.value).toLocaleString('en-US', {
-          dateStyle: 'short',
-          timeStyle: 'short',
-        });
-      },
-    },
-    {
-      field: 'price',
-      headerName: 'Price',
-      width: 100,
-      valueFormatter: (params: { value: number }) => `$${params.value}`,
-    },
-    {
-      field: 'availableSeats',
-      headerName: 'Seats',
-      width: 80,
-      align: 'center',
-    },
-    {
-      field: 'active',
-      headerName: 'Status',
-      width: 100,
-      renderCell: (params) => (
-        <Chip
-          label={params.value ? 'Active' : 'Inactive'}
-          color={params.value ? 'success' : 'default'}
-          size="small"
-        />
-      ),
-    },
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: 'Actions',
-      width: 120,
-      getActions: (params: GridRowParams<AdminFlight>) => [
-        <GridActionsCellItem
-          key="edit"
-          icon={<EditIcon />}
-          label="Edit"
-          onClick={() => onEdit(params.row)}
-          color="primary"
-        />,
-        <GridActionsCellItem
-          key="delete"
-          icon={<DeleteIcon sx={{ color: 'error.main' }} />}
-          label="Delete"
-          onClick={() => onDelete(params.row)}
-        />,
-      ],
-    },
-  ];
+  useEffect(() => {
+    fetchFlights({ page: 0, size: 20 });
+  }, [fetchFlights]);
 
   if (isLoading && flights.length === 0) {
     return <LoadingSpinner message="Loading flights..." />;
@@ -120,7 +34,7 @@ export const FlightTable = ({ onEdit, onDelete }: FlightTableProps) => {
       <Box sx={{ height: 600, width: '100%' }}>
         <DataGrid
           rows={flights}
-          columns={columns}
+          columns={columns(onEdit, onDelete)}
           pagination
           paginationMode="server"
           rowCount={totalElements}

@@ -89,7 +89,11 @@ export const useAuthStore = create<AuthStore>()(
         const token = tokenManager.get();
 
         if (!token) {
-          set({ isLoading: false });
+          set({
+            user: null,
+            isAuthenticated: false,
+            isLoading: false,
+          });
           return;
         }
 
