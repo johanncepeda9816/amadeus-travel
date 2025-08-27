@@ -12,8 +12,11 @@ import {
   AccessTime,
   AirlineSeatReclineNormal,
 } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import type { Flight } from '@/services';
 import { BaseButton } from '@/components';
+import { useAuth } from '@/hooks';
+import { APP_ROUTES } from '@/lib';
 
 interface FlightCardProps {
   flight: Flight;
@@ -21,6 +24,18 @@ interface FlightCardProps {
 }
 
 export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  const handleBookFlight = () => {
+    if (!isAuthenticated) {
+      navigate(APP_ROUTES.LOGIN.path);
+      return;
+    }
+
+    console.log('Booking flight:', flight.flightNumber);
+  };
+
   const formatters = {
     time: (dateTimeString: string) => {
       const date = new Date(dateTimeString);
@@ -265,6 +280,7 @@ export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
               color="primary"
               size="medium"
               sx={{ borderRadius: 20 }}
+              onClick={handleBookFlight}
             >
               Book
             </BaseButton>
