@@ -21,6 +21,12 @@ export const APP_ROUTES = {
     allowedRoles: [UserRole.ADMIN, UserRole.USER],
     isPublic: true,
   },
+  DASHBOARD: {
+    path: '/dashboard',
+    name: 'Admin Dashboard',
+    allowedRoles: [UserRole.ADMIN],
+    isPublic: false,
+  },
 } as const satisfies Record<string, AppRoute>;
 
 export const getRoutesByRole = (role: UserRoleType): AppRoute[] => {
