@@ -13,6 +13,7 @@ import {
   AirlineSeatReclineNormal,
 } from '@mui/icons-material';
 import type { Flight } from '@/services';
+import { BaseButton } from '@/components';
 
 interface FlightCardProps {
   flight: Flight;
@@ -249,49 +250,14 @@ export const FlightCard = ({ flight, currency = 'COP' }: FlightCardProps) => {
               </Box>
             </Box>
 
-            <Box
-              component="button"
-              sx={{
-                all: 'unset',
-                cursor: 'pointer',
-                width: { xs: '100%', sm: 'auto' },
-                mt: { xs: 1, sm: 0 },
-                '&:focus': {
-                  outline: 'none',
-                },
-                '&:focus-visible': {
-                  outline: 'none',
-                },
-              }}
+            <BaseButton
+              variant="contained"
+              color="primary"
+              size="medium"
+              sx={{ borderRadius: 20 }}
             >
-              <Box
-                sx={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  px: { xs: 2, sm: 3 },
-                  py: { xs: 1.5, sm: 1 },
-                  borderRadius: 2,
-                  bgcolor: 'primary.main',
-                  color: 'white',
-                  fontWeight: 600,
-                  fontSize: '0.875rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.02857em',
-                  width: '100%',
-                  transition: 'all 0.2s ease-in-out',
-                  '&:hover': {
-                    bgcolor: 'primary.dark',
-                    transform: 'translateY(-1px)',
-                  },
-                  '&:active': {
-                    transform: 'translateY(0)',
-                  },
-                }}
-              >
-                Select
-              </Box>
-            </Box>
+              Book
+            </BaseButton>
           </Box>
         </Stack>
       </CardContent>
