@@ -85,12 +85,6 @@ export const useAdminFlights = () => {
       setState((prev) => ({ ...prev, isCreating: false }));
       notifications.success('Flight created successfully');
 
-      await fetchFlights({
-        page: state.currentPage,
-        size: state.pageSize,
-        searchTerm: state.searchTerm || undefined,
-      });
-
       return response.data;
     } catch (error) {
       const errorMessage =
@@ -121,12 +115,6 @@ export const useAdminFlights = () => {
       setState((prev) => ({ ...prev, isUpdating: false }));
       notifications.success('Flight updated successfully');
 
-      await fetchFlights({
-        page: state.currentPage,
-        size: state.pageSize,
-        searchTerm: state.searchTerm || undefined,
-      });
-
       return response.data;
     } catch (error) {
       const errorMessage =
@@ -153,12 +141,6 @@ export const useAdminFlights = () => {
 
       setState((prev) => ({ ...prev, isDeleting: false }));
       notifications.success('Flight deleted successfully');
-
-      await fetchFlights({
-        page: state.currentPage,
-        size: state.pageSize,
-        searchTerm: state.searchTerm || undefined,
-      });
 
       return true;
     } catch (error) {
@@ -195,13 +177,16 @@ export const useAdminFlights = () => {
     setState((prev) => ({ ...prev, error: null }));
   };
 
-  const refreshFlights = () => {
-    fetchFlights({
-      page: state.currentPage,
-      size: state.pageSize,
-      searchTerm: state.searchTerm || undefined,
+  const refreshFlights = useCallback(() => {
+    setState((prev) => {
+      fetchFlights({
+        page: prev.currentPage,
+        size: prev.pageSize,
+        searchTerm: prev.searchTerm || undefined,
+      });
+      return prev;
     });
-  };
+  }, [fetchFlights]);
 
   const searchFlights = useCallback(
     (searchTerm: string) => {

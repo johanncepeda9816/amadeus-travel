@@ -10,9 +10,14 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 interface FlightTableProps {
   onEdit: (flight: AdminFlight) => void;
   onDelete: (flight: AdminFlight) => void;
+  refreshTrigger?: number;
 }
 
-export const FlightTable = ({ onEdit, onDelete }: FlightTableProps) => {
+export const FlightTable = ({
+  onEdit,
+  onDelete,
+  refreshTrigger,
+}: FlightTableProps) => {
   const {
     flights,
     isLoading,
@@ -23,6 +28,7 @@ export const FlightTable = ({ onEdit, onDelete }: FlightTableProps) => {
     fetchFlights,
     searchFlights,
     clearSearch,
+    refreshFlights,
   } = useAdminFlights();
 
   const [inputValue, setInputValue] = useState('');
@@ -65,6 +71,12 @@ export const FlightTable = ({ onEdit, onDelete }: FlightTableProps) => {
   useEffect(() => {
     fetchFlights({ page: 0, size: 20 });
   }, [fetchFlights]);
+
+  useEffect(() => {
+    if (refreshTrigger && refreshTrigger > 0) {
+      refreshFlights();
+    }
+  }, [refreshTrigger, refreshFlights]);
 
   if (isLoading && flights.length === 0) {
     return <LoadingSpinner message="Loading flights..." />;

@@ -8,7 +8,8 @@ import type { AdminFlight } from '@/types/flights';
 export const DashboardPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingFlight, setEditingFlight] = useState<AdminFlight | null>(null);
-  const { deleteFlight, refreshFlights } = useAdminFlights();
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const { deleteFlight } = useAdminFlights();
 
   const handleCreateClick = () => {
     setEditingFlight(null);
@@ -26,8 +27,10 @@ export const DashboardPage = () => {
         `Are you sure you want to delete flight ${flight.flightNumber}?`
       )
     ) {
-      await deleteFlight(flight.id);
-      refreshFlights();
+      const success = await deleteFlight(flight.id);
+      if (success) {
+        setRefreshTrigger((prev) => prev + 1);
+      }
     }
   };
 
@@ -37,7 +40,7 @@ export const DashboardPage = () => {
   };
 
   const handleModalSuccess = () => {
-    refreshFlights();
+    setRefreshTrigger((prev) => prev + 1);
     handleCloseModal();
   };
 
@@ -68,7 +71,11 @@ export const DashboardPage = () => {
         </Button>
       </Stack>
 
-      <FlightTable onEdit={handleEditFlight} onDelete={handleDeleteFlight} />
+      <FlightTable
+        onEdit={handleEditFlight}
+        onDelete={handleDeleteFlight}
+        refreshTrigger={refreshTrigger}
+      />
 
       <FlightModal
         open={isModalOpen}
