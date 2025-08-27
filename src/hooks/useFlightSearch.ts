@@ -1,8 +1,9 @@
 import type { FlightSearchFormData } from '@/features/flights/schemas';
 import { notifications } from '@/lib';
 import type { FlightSearchResponse } from '@/services';
+import type { Location } from '@/types/flights';
 import { flightService } from '@/services';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface UseFlightSearchState {
   searchResults: FlightSearchResponse['data'] | null;
@@ -18,6 +19,40 @@ export const useFlightSearch = () => {
     searchError: null,
     hasSearched: false,
   });
+
+  const [availableOrigins, setAvailableOrigins] = useState<Location[]>([]);
+  const [availableDestinations, setAvailableDestinations] = useState<
+    Location[]
+  >([]);
+  const [isLoadingLocations, setIsLoadingLocations] = useState<boolean>(false);
+
+  useEffect(() => {
+    getAvailableLocations();
+    getAvailableDestinations();
+  }, []);
+
+  const getAvailableLocations = async () => {
+    try {
+      setIsLoadingLocations(true);
+      const response = await flightService.getAvailableLocations();
+      setAvailableOrigins(response.data);
+    } catch (error) {
+      console.error('Error loading origins:', error);
+      notifications.error('Error loading available origins');
+    } finally {
+      setIsLoadingLocations(false);
+    }
+  };
+
+  const getAvailableDestinations = async () => {
+    try {
+      const response = await flightService.getAvailableLocations();
+      setAvailableDestinations(response.data);
+    } catch (error) {
+      console.error('Error loading destinations:', error);
+      notifications.error('Error loading available destinations');
+    }
+  };
 
   const searchFlights = async (searchData: FlightSearchFormData) => {
     setState((prev) => ({
@@ -89,6 +124,9 @@ export const useFlightSearch = () => {
     isLoading: state.isLoading,
     searchError: state.searchError,
     hasSearched: state.hasSearched,
+    availableOrigins,
+    availableDestinations,
+    isLoadingLocations,
     searchFlights,
     clearSearch,
     clearError,

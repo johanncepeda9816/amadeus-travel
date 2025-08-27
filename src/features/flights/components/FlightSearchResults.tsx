@@ -1,3 +1,4 @@
+import type { Flight } from '@/services';
 import { useFlightSearchStore } from '../store/flightSearchStore';
 import { FlightCard } from './FlightCard';
 import {
@@ -84,7 +85,7 @@ export const FlightSearchResults = () => {
             Outbound Flights ({outboundFlights.length})
           </Typography>
           <Stack spacing={2}>
-            {outboundFlights.map((flight, index) => (
+            {outboundFlights.map((flight: Flight, index: number) => (
               <FlightCard
                 key={`outbound-${flight.flightNumber}-${index}`}
                 flight={flight}
@@ -106,7 +107,7 @@ export const FlightSearchResults = () => {
               Return Flights ({returnFlights.length})
             </Typography>
             <Stack spacing={2}>
-              {returnFlights.map((flight, index) => (
+              {returnFlights.map((flight: Flight, index: number) => (
                 <FlightCard
                   key={`return-${flight.flightNumber}-${index}`}
                   flight={flight}

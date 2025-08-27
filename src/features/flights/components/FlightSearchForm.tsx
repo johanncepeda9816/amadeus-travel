@@ -1,4 +1,9 @@
-import { BaseButton, DateInput, FormikInput, SelectInput } from '@/components';
+import {
+  BaseButton,
+  DateInput,
+  LocationAutocomplete,
+  SelectInput,
+} from '@/components';
 import { useFlightSearchStore } from '../store/flightSearchStore';
 import {
   Box,
@@ -14,10 +19,14 @@ import {
 import { Form, Formik } from 'formik';
 import type { FlightSearchFormData } from '../schemas';
 import { flightSearchSchema } from '../schemas';
+import { useFlightSearch } from '@/hooks';
 
 export const FlightSearchForm = () => {
   const { searchFlights, isLoading, clearError, clearSearch, lastSearchData } =
     useFlightSearchStore();
+
+  const { availableOrigins, availableDestinations, isLoadingLocations } =
+    useFlightSearch();
 
   const initialValues: FlightSearchFormData = lastSearchData
     ? {
@@ -123,18 +132,22 @@ export const FlightSearchForm = () => {
 
               <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                 <Box sx={{ flex: 1, minWidth: 200 }}>
-                  <FormikInput
+                  <LocationAutocomplete
                     name="origin"
                     label="From"
-                    placeholder="Origin city or airport"
+                    placeholder="Select origin city"
+                    locations={availableOrigins}
+                    isLoading={isLoadingLocations}
                     useFormik
                   />
                 </Box>
                 <Box sx={{ flex: 1, minWidth: 200 }}>
-                  <FormikInput
+                  <LocationAutocomplete
                     name="destination"
                     label="To"
-                    placeholder="Destination city or airport"
+                    placeholder="Select destination city"
+                    locations={availableDestinations}
+                    isLoading={isLoadingLocations}
                     useFormik
                   />
                 </Box>

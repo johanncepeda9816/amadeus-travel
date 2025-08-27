@@ -1,46 +1,12 @@
 import type { FlightSearchFormData } from '@/features/flights/schemas';
+import type {
+  FlightSearchRequest,
+  FlightSearchResponse,
+} from '@/types/flights';
+import type { LocationResponse, SingleLocationResponse } from '@/types/flights';
 import { api } from './api';
 
-export interface Flight {
-  flightNumber: string;
-  airline: string;
-  origin: string;
-  destination: string;
-  departureTime: string;
-  arrivalTime: string;
-  duration: string;
-  price: number;
-  aircraftType: string;
-  availableSeats: number;
-  cabinClass: string;
-}
-
-export interface SearchMetadata {
-  searchId: string;
-  searchTime: string;
-  totalResults: number;
-  currency: string;
-}
-
-export interface FlightSearchResponse {
-  success: boolean;
-  message: string;
-  data: {
-    outboundFlights: Flight[];
-    returnFlights: Flight[];
-    metadata: SearchMetadata;
-  };
-  error: string | null;
-}
-
-export interface FlightSearchRequest {
-  origin: string;
-  destination: string;
-  departureDate: string;
-  returnDate?: string | null;
-  tripType: string;
-  passengers: number;
-}
+const BASE_URL = '/flights';
 
 const transformFormDataToRequest = (
   formData: FlightSearchFormData
@@ -63,12 +29,29 @@ export const searchFlights = async (
   const requestData = transformFormDataToRequest(searchData);
 
   const response = await api.post<FlightSearchResponse>(
-    '/flights/search',
+    `${BASE_URL}/search`,
     requestData
+  );
+  return response.data;
+};
+
+export const getAvailableLocations =
+  async (): Promise<SingleLocationResponse> => {
+    const response = await api.get<SingleLocationResponse>(
+      `${BASE_URL}/locations`
+    );
+    return response.data;
+  };
+
+export const getAvailableDestinations = async (): Promise<LocationResponse> => {
+  const response = await api.get<LocationResponse>(
+    `${BASE_URL}/locations/destinations`
   );
   return response.data;
 };
 
 export const flightService = {
   searchFlights,
+  getAvailableLocations,
+  getAvailableDestinations,
 };
