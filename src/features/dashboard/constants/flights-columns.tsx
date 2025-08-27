@@ -11,27 +11,32 @@ export const columns = (
   {
     field: 'flightNumber',
     headerName: 'Flight Number',
-    width: 130,
+    flex: 1,
+    minWidth: 120,
   },
   {
     field: 'airline',
     headerName: 'Airline',
-    width: 150,
+    flex: 1.2,
+    minWidth: 130,
   },
   {
     field: 'origin',
     headerName: 'Origin',
-    width: 120,
+    flex: 1,
+    minWidth: 100,
   },
   {
     field: 'destination',
     headerName: 'Destination',
-    width: 120,
+    flex: 1,
+    minWidth: 100,
   },
   {
     field: 'departureTime',
     headerName: 'Departure',
-    width: 180,
+    flex: 1.5,
+    minWidth: 160,
     valueFormatter: (params: string) => {
       if (!params) return 'No value';
 
@@ -56,7 +61,8 @@ export const columns = (
   {
     field: 'arrivalTime',
     headerName: 'Arrival',
-    width: 180,
+    flex: 1.5,
+    minWidth: 160,
     valueFormatter: (params: string) => {
       if (!params) return 'No value';
 
@@ -81,7 +87,8 @@ export const columns = (
   {
     field: 'price',
     headerName: 'Price',
-    width: 100,
+    flex: 0.8,
+    minWidth: 100,
     valueFormatter: (params: number) => {
       if (params == null || params === undefined) return 'No price';
       return `$${params.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
@@ -90,13 +97,15 @@ export const columns = (
   {
     field: 'availableSeats',
     headerName: 'Seats',
-    width: 80,
+    flex: 0.6,
+    minWidth: 70,
     align: 'center',
   },
   {
     field: 'active',
     headerName: 'Status',
-    width: 100,
+    flex: 0.8,
+    minWidth: 90,
     renderCell: (params) => (
       <Chip
         label={params.value ? 'Active' : 'Inactive'}
@@ -109,7 +118,8 @@ export const columns = (
     field: 'actions',
     type: 'actions',
     headerName: 'Actions',
-    width: 120,
+    flex: 0.8,
+    minWidth: 100,
     getActions: (params: GridRowParams<AdminFlight>) => [
       <GridActionsCellItem
         key="edit"
