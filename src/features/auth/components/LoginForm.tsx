@@ -1,19 +1,27 @@
 import { BaseButton, FormikInput } from '@/components';
 import { useAuth } from '@/hooks';
+import { APP_ROUTES, UserRole } from '@/lib';
 import { Alert, Box, Paper, Typography } from '@mui/material';
 import { Form, Formik } from 'formik';
+import { useNavigate } from 'react-router-dom';
 import type { LoginFormData } from '../schemas';
 import { loginSchema } from '../schemas';
 
 export const LoginForm = () => {
   const { login, isLoading, loginError, clearError } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (values: LoginFormData) => {
     clearError();
     const result = await login(values);
 
-    if (result.success) {
-      console.log('Login successful');
+    if (result.success && result.user) {
+      // Redirect based on user role
+      if (result.user.role === UserRole.ADMIN) {
+        navigate(APP_ROUTES.DASHBOARD.path);
+      } else {
+        navigate(APP_ROUTES.HOME.path);
+      }
     }
   };
 

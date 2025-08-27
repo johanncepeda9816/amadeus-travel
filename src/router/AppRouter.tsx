@@ -1,7 +1,8 @@
 import { Layout } from '@/components';
-import { HomePage, LoginForm } from '@/features';
+import { DashboardPage, HomePage, LoginForm } from '@/features';
+import { ProtectedRoute } from '@/guards';
 import { useAuth } from '@/hooks';
-import { APP_ROUTES } from '@/lib';
+import { APP_ROUTES, UserRole } from '@/lib';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 export const AppRouter = () => {
@@ -27,6 +28,17 @@ export const AppRouter = () => {
             ) : (
               <LoginForm />
             )
+          }
+        />
+
+        <Route
+          path={APP_ROUTES.DASHBOARD.path}
+          element={
+            <ProtectedRoute requiredRole={UserRole.ADMIN}>
+              <Layout>
+                <DashboardPage />
+              </Layout>
+            </ProtectedRoute>
           }
         />
 

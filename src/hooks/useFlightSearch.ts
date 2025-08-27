@@ -1,7 +1,6 @@
 import type { FlightSearchFormData } from '@/features/flights/schemas';
 import { notifications } from '@/lib';
-import type { FlightSearchResponse } from '@/services';
-import type { Location } from '@/types/flights';
+import type { FlightSearchResponse, Location } from '@/types/flights';
 import { flightService } from '@/services';
 import { useEffect, useState } from 'react';
 

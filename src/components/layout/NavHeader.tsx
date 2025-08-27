@@ -1,5 +1,6 @@
 import { useAuth } from '@/hooks';
 import { APP_ROUTES } from '@/lib';
+import { UserRole } from '@/lib/types';
 import {
   Login as LoginIcon,
   Logout as LogoutIcon,
@@ -7,6 +8,7 @@ import {
   AccountCircle as ProfileIcon,
   LocalOffer as PromotionsIcon,
   FlightTakeoff as TripsIcon,
+  Dashboard as DashboardIcon,
 } from '@mui/icons-material';
 import {
   AppBar,
@@ -64,6 +66,11 @@ export const NavHeader = () => {
     handleMenuClose();
     // TODO: Navigate to promotions page
     console.log('Navigate to promotions');
+  };
+
+  const handleDashboard = () => {
+    handleMenuClose();
+    navigate(APP_ROUTES.DASHBOARD.path);
   };
 
   const handleBrandClick = () => {
@@ -143,6 +150,17 @@ export const NavHeader = () => {
                   </Typography>
                 </Box>,
                 <Divider key="divider1" />,
+                ...(user.role === UserRole.ADMIN
+                  ? [
+                      <MenuItem key="dashboard" onClick={handleDashboard}>
+                        <ListItemIcon>
+                          <DashboardIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Admin Dashboard</ListItemText>
+                      </MenuItem>,
+                      <Divider key="divider-admin" />,
+                    ]
+                  : []),
                 <MenuItem key="profile" onClick={handleProfile}>
                   <ListItemIcon>
                     <ProfileIcon fontSize="small" />

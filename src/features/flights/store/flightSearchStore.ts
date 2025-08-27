@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { FlightSearchFormData } from '../schemas';
-import type { FlightSearchResponse } from '@/services';
 import { flightService } from '@/services';
 import { notifications } from '@/lib';
+import type { FlightSearchResponse } from '@/types/flights';
 
 interface FlightSearchState {
   searchResults: FlightSearchResponse['data'] | null;
