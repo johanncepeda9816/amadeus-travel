@@ -32,29 +32,60 @@ export const columns = (
     field: 'departureTime',
     headerName: 'Departure',
     width: 180,
-    valueFormatter: (params: { value: string }) => {
-      return new Date(params.value).toLocaleString('en-US', {
-        dateStyle: 'short',
-        timeStyle: 'short',
-      });
+    valueFormatter: (params: string) => {
+      if (!params) return 'No value';
+
+      const date = new Date(params);
+
+      if (isNaN(date.getTime())) return `Invalid: ${params}`;
+
+      return (
+        date.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        }) +
+        ' ' +
+        date.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      );
     },
   },
   {
     field: 'arrivalTime',
     headerName: 'Arrival',
     width: 180,
-    valueFormatter: (params: { value: string }) => {
-      return new Date(params.value).toLocaleString('en-US', {
-        dateStyle: 'short',
-        timeStyle: 'short',
-      });
+    valueFormatter: (params: string) => {
+      if (!params) return 'No value';
+
+      const date = new Date(params);
+
+      if (isNaN(date.getTime())) return `Invalid: ${params}`;
+
+      return (
+        date.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        }) +
+        ' ' +
+        date.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      );
     },
   },
   {
     field: 'price',
     headerName: 'Price',
     width: 100,
-    valueFormatter: (params: { value: number }) => `$${params.value}`,
+    valueFormatter: (params: number) => {
+      if (params == null || params === undefined) return 'No price';
+      return `$${params.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+    },
   },
   {
     field: 'availableSeats',

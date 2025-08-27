@@ -60,26 +60,6 @@ api.interceptors.response.use(
         notifications.error('Session expired - please log in again');
         break;
 
-      case 403:
-        notifications.error('Access denied - insufficient permissions');
-        break;
-
-      case 404:
-        notifications.error('Resource not found');
-        break;
-
-      case 422: {
-        // Validation errors
-        const errorData = response.data as { message?: string };
-        const message = errorData?.message || 'Validation failed';
-        notifications.error(message);
-        break;
-      }
-
-      case 500:
-        notifications.error('Server error - please try again later');
-        break;
-
       default: {
         const errorData = response.data as { message?: string };
         const defaultMessage =
@@ -88,6 +68,8 @@ api.interceptors.response.use(
         break;
       }
     }
+
+    notifications.error(error.message || 'An unexpected error occurred');
 
     return Promise.reject(error);
   }
