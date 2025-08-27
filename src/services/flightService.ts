@@ -2,6 +2,7 @@ import type { FlightSearchFormData } from '@/features/flights/schemas';
 import type {
   FlightSearchRequest,
   FlightSearchResponse,
+  UpcomingFlightsResponse,
 } from '@/types/flights';
 import type { LocationResponse, SingleLocationResponse } from '@/types/flights';
 import { api } from './api';
@@ -50,8 +51,17 @@ export const getAvailableDestinations = async (): Promise<LocationResponse> => {
   return response.data;
 };
 
+export const getUpcomingFlights =
+  async (): Promise<UpcomingFlightsResponse> => {
+    const response = await api.get<UpcomingFlightsResponse>(
+      `${BASE_URL}/upcoming?limit=3`
+    );
+    return response.data;
+  };
+
 export const flightService = {
   searchFlights,
   getAvailableLocations,
   getAvailableDestinations,
+  getUpcomingFlights,
 };

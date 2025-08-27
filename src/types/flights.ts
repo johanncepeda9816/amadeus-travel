@@ -1,3 +1,5 @@
+import type { BaseResponse } from './global';
+
 export interface Flight {
   flightNumber: string;
   airline: string;
@@ -19,16 +21,11 @@ export interface SearchMetadata {
   currency: string;
 }
 
-export interface FlightSearchResponse {
-  success: boolean;
-  message: string;
-  data: {
-    outboundFlights: Flight[];
-    returnFlights: Flight[];
-    metadata: SearchMetadata;
-  };
-  error: string | null;
-}
+export type FlightSearchResponse = BaseResponse<{
+  outboundFlights: Flight[];
+  returnFlights: Flight[];
+  metadata: SearchMetadata;
+}>;
 
 export interface FlightSearchRequest {
   origin: string;
@@ -44,19 +41,11 @@ export interface Location {
   code: string;
 }
 
-export interface LocationResponse {
-  success: boolean;
-  message: string;
-  data: {
-    origins: Location[];
-    destinations: Location[];
-  };
-  error: string | null;
-}
+export type LocationResponse = BaseResponse<{
+  origins: Location[];
+  destinations: Location[];
+}>;
 
-export interface SingleLocationResponse {
-  success: boolean;
-  message: string;
-  data: Location[];
-  error: string | null;
-}
+export type SingleLocationResponse = BaseResponse<Location[]>;
+
+export type UpcomingFlightsResponse = BaseResponse<Flight[]>;

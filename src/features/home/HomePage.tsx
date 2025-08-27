@@ -1,12 +1,16 @@
 import { Box } from '@mui/material';
-import { HeroSection } from './components/HeroSection';
-import { SearchSection } from './components/SearchSection';
+import {
+  HeroSection,
+  SearchSection,
+  UpcomingFlightsSection,
+} from './components';
 
 export const HomePage = () => {
   return (
-    <Box>
+    <Box sx={{ pb: 10 }}>
       <HeroSection />
       <SearchSection />
+      <UpcomingFlightsSection />
     </Box>
   );
 };
